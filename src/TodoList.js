@@ -1,15 +1,11 @@
-import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { useState } from "react";
-import {
-  filteredTodoListState,
-  todoListFilterState,
-  todoListState,
-  todoListStatsState,
-} from "./atom/todoList";
+import { filteredTodoListState } from "./atom/todoList";
+import { useTodoList } from "./hook/useTodoList";
 
 function TodoListStats() {
   const { totalNum, totalCompletedNum, totalUncompletedNum, percentCompleted } =
-    useRecoilValue(todoListStatsState);
+    useTodoList();
 
   const formattedPercentCompleted = Math.round(percentCompleted * 100);
 
@@ -39,7 +35,7 @@ export function TodoList() {
 }
 
 function TodoListFilters() {
-  const [filter, setFilter] = useRecoilState(todoListFilterState);
+  const { filter, setFilter } = useTodoList();
 
   const updateFilter = ({ target: { value } }) => {
     setFilter(value);
@@ -59,7 +55,7 @@ function TodoListFilters() {
 
 function TodoItemCreator() {
   const [inputValue, setInputValue] = useState("");
-  const setTodoList = useSetRecoilState(todoListState);
+  const { setTodoList } = useTodoList();
 
   const addItem = () => {
     setTodoList((oldTodoList) => [
@@ -86,7 +82,7 @@ function TodoItemCreator() {
 }
 
 function TodoItem({ item }) {
-  const [todoList, setTodoList] = useRecoilState(todoListState);
+  const { todoList, setTodoList } = useTodoList();
   const index = todoList.findIndex((listItem) => listItem === item);
 
   const editItemText = ({ target: { value } }) => {
